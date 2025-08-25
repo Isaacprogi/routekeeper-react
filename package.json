@@ -18,7 +18,7 @@
     "authorization"
   ],
   "author": "Isaac Anasonye",
-  "license": "ISC",
+  "license": "MIT",
   "description": "A React RouteGuard component for role-based and protected routing.",
   "peerDependencies": {
     "react": "^19.1.1",
