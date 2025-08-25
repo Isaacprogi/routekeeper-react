@@ -4,10 +4,10 @@ import type { RouteConfig,RouteGuardProps } from "../utils/type";
 import { LoadingScreen } from "./LoadingScreen";
 import { LandingFallback } from "./LandingFallback";
 import { ErrorBoundary } from "./ErrorBoundary";
-import Unauthorized from "./UnAuthorized";
-import NotFound from "./NotFound";
+import { Unauthorized } from "./Unauthorized";
+import { NotFound } from "./NotFound";
 
-export const RouteGuard: React.FC<RouteGuardProps> = ({
+export const RouteKeeper: React.FC<RouteGuardProps> = ({
   routes,
   accessToken,
   userRoles = [],
