@@ -1,4 +1,4 @@
-=# 🛡️ RouteKeeper - Your React Route Guardian
+# 🛡️ RouteKeeper - Your React Route Guardian
 
 > *The superhero your React app deserves! 🦸‍♂️*
 
