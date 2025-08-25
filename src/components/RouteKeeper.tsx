@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import type { RouteConfig,RouteGuardProps } from "../utils/type";
+import type { RouteConfig, RouteGuardProps } from "../utils/type";
 import { LoadingScreen } from "./LoadingScreen";
 import { LandingFallback } from "./LandingFallback";
 import { ErrorBoundary } from "./ErrorBoundary";
@@ -60,19 +60,19 @@ export const RouteKeeper: React.FC<RouteGuardProps> = ({
           roles && excludeParentRole
             ? roles
             : [...new Set([...(parentRoles || []), ...(roles || [])])];
-        
-        console.log(effectiveRoles)
+
+        console.log(effectiveRoles);
 
         // Check role access
         const hasRoleAccess =
           effectiveRoles.length === 0 ||
           userRoles.some((role) => effectiveRoles.includes(role));
 
-        if (type === "private") {
+        if (path === "/") {
+          routeElement = accessToken ? element : privateFallback;
+        } else if (type === "private") {
           if (!hasRoleAccess) {
             routeElement = unAuthorized;
-          } else if (path === "/") {
-            routeElement = accessToken ? element : privateFallback;
           } else {
             routeElement = accessToken ? (
               element
@@ -98,8 +98,12 @@ export const RouteKeeper: React.FC<RouteGuardProps> = ({
           <Route key={`${parentKey}${path}`} path={path} element={routeElement}>
             {children &&
               children.length > 0 &&
-              renderRoutes(children, `${parentKey}${path}-`, routeType, effectiveRoles)
-              }
+              renderRoutes(
+                children,
+                `${parentKey}${path}-`,
+                routeType,
+                effectiveRoles
+              )}
           </Route>
         );
       }
