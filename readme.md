@@ -1,4 +1,4 @@
-# 🛡️ RouteKeeper - Your React Route Guardian
+=# 🛡️ RouteKeeper - Your React Route Guardian
 
 > *The superhero your React app deserves! 🦸‍♂️*
 
@@ -35,6 +35,7 @@ pnpm add routekeeper-react
 ```
 
 ### 30-Second Setup ⏰
+Ensure it is used with BrowserRouter from 'react-router-dom'
 
 ```jsx
 import { RouteKeeper } from "routekeeper-react";
