@@ -17,6 +17,14 @@
     "roles",
     "authorization"
   ],
+   "repository": {
+    "type": "git",
+    "url": "https://github.com/Isaacprogi/routekeeper-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Isaacprogi/routekeeper-react/issues"
+  },
+  "homepage": "https://github.com/Isaacprogi/routekeeper-react#readme",
   "author": "Isaac Anasonye",
   "license": "MIT",
   "description": "A React RouteGuard component for role-based and protected routing.",
