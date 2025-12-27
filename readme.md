@@ -1,7 +1,3 @@
----
-sidebar: false
----
-
 # RouteKeeper - Your React Route Guardian
 
 > *The superhero your React app deserves!*
