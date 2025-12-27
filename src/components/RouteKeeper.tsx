@@ -9,28 +9,43 @@ import { NotFound } from "./NotFound";
 
 export const RouteKeeper: React.FC<RouteGuardProps> = ({
   routes,
-  accessToken,
+  auth,
   userRoles = [],
   loading,
   loadingScreen = <LoadingScreen />,
   publicRedirect = "/",
   privateFallback = <LandingFallback />,
+  privateRedirect = "/login",
   notFound = <NotFound />,
   unAuthorized = <Unauthorized />,
 }) => {
   if (loading) return loadingScreen;
 
+  const safePrivateRedirect =
+    typeof privateRedirect === "string" && privateRedirect.trim() !== ""
+      ? privateRedirect
+      : "/login";
+
   const renderRoutes = (
     routesArray: RouteConfig[],
     parentKey = "",
-    inheritedType?: "private" | "public",
+    inheritedType?: "private" | "public" | "neutral",
     parentRoles: string[] = []
-  ): React.ReactNode =>
-    routesArray.map(
-      ({ path, element, type, children, index, roles, excludeParentRole }) => {
-        const usedPaths = new Set<string>();
-        let indexUsed = false;
+  ): (React.ReactElement | null)[] => {
+    const usedPaths = new Set<string>();
+    let indexUsed = false;
 
+    return routesArray.map(
+      ({
+        path,
+        element,
+        type,
+        children,
+        index,
+        roles,
+        excludeParentRole,
+        ...rest
+      }:RouteConfig) => {
         if (index) {
           if (indexUsed) {
             console.warn(
@@ -41,7 +56,6 @@ export const RouteKeeper: React.FC<RouteGuardProps> = ({
           indexUsed = true;
         }
 
-        // Check for duplicate sibling path
         if (path) {
           if (usedPaths.has(path)) {
             console.warn(
@@ -52,7 +66,6 @@ export const RouteKeeper: React.FC<RouteGuardProps> = ({
           usedPaths.add(path);
         }
 
-        // Children inherit parent type if not explicitly defined
         const routeType = type || inheritedType || "public";
         let routeElement: React.ReactNode;
 
@@ -61,53 +74,94 @@ export const RouteKeeper: React.FC<RouteGuardProps> = ({
             ? roles
             : [...new Set([...(parentRoles || []), ...(roles || [])])];
 
-        console.log(effectiveRoles);
-
-        // Check role access
         const hasRoleAccess =
           effectiveRoles.length === 0 ||
           userRoles.some((role) => effectiveRoles.includes(role));
 
         if (path === "/") {
-          routeElement = accessToken ? element : privateFallback;
-        } else if (type === "private") {
-          if (!hasRoleAccess) {
-            routeElement = unAuthorized;
+          if (!auth) {
+            routeElement = privateFallback;
           } else {
-            routeElement = accessToken ? (
-              element
-            ) : (
-              <Navigate to="/login" replace />
-            );
+            routeElement = element;
           }
-        } else {
-          routeElement = accessToken ? (
-            <Navigate to={publicRedirect} replace />
-          ) : (
-            element
-          );
         }
+        
+        else {
+          switch (routeType) {
+            case "private":
+              routeElement = !auth ? (
+                <Navigate to={safePrivateRedirect} replace />
+              ) : !hasRoleAccess ? (
+                unAuthorized
+              ) : (
+                element
+              );
+              break;
+
+            case "public":
+              routeElement = auth ? (
+                <Navigate to={publicRedirect} replace />
+              ) : (
+                element
+              );
+              break;
+
+            case "neutral":
+              routeElement = element;
+              break;
+
+            default:
+              routeElement = null;
+          }
+        }
+
+        const childRoutes = children
+          ? renderRoutes(
+              children,
+              parentKey + (path || "index"),
+              routeType,
+              effectiveRoles
+            )
+          : undefined;
 
         if (index) {
           return (
-            <Route key={`${parentKey}index`} index element={routeElement} />
+            <Route
+              key={parentKey + "index"}
+              index
+              element={routeElement}
+              {...rest}
+            />
           );
         }
 
-        return (
-          <Route key={`${parentKey}${path}`} path={path} element={routeElement}>
-            {children &&
-              children.length > 0 &&
-              renderRoutes(
-                children,
-                `${parentKey}${path}-`,
-                routeType,
-                effectiveRoles
-              )}
-          </Route>
-        );
+       
+        if (children && children.length > 0) {
+         
+          return (
+            <Route
+              key={parentKey + path}
+              path={path}
+              element={routeElement} 
+              {...rest}
+            >
+              {childRoutes}
+            </Route>
+          );
+        } else {
+          // Leaf route — no children, just render the element directly
+          return (
+            <Route
+              key={parentKey + path}
+              path={path}
+              element={routeElement}
+              {...rest}
+            />
+          );
+        }
       }
     );
+  };
 
   return (
     <ErrorBoundary>

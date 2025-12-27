@@ -1,21 +1,57 @@
 .landing-fallback-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: #f9fafb; 
   padding: 1rem;
   text-align: center;
+  font-family: 'Inter', sans-serif;
 }
 
 .landing-fallback-title {
   font-size: 2.25rem;
   font-weight: 700; 
   color: #111827; 
+  margin-bottom: 0.5rem;
+  animation: fadeIn 1.2s ease-in-out;
 }
 
+.landing-fallback-subtitle {
+  font-size: 1.125rem;
+  color: #4b5563; 
+  margin-bottom: 1.5rem;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.landing-fallback-emoji {
+  font-size: 3rem;
+  animation: bounce 2s infinite;
+}
+
+/* Responsive font sizes */
 @media (min-width: 768px) {
   .landing-fallback-title {
     font-size: 3.75rem; 
   }
+
+  .landing-fallback-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .landing-fallback-emoji {
+    font-size: 4rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
 }
