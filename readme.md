@@ -1,25 +1,53 @@
-# RouteKeeper - Your React Route Guardian
+# RouteKeeper — React RouteGuard for role-based and protected routing.
 
-> *The superhero your React app deserves!*
 
-**RouteKeeper** is a routing utility for React applications. It intelligently manages access, ensuring users reach the right pages at the right time. Whether you're building a large-scale application or a simple dashboard, RouteKeeper simplifies route management and enforces access control.
+> *Route protection and access management, simplified for React.*
 
+**RouteKeeper** is a React routing utility that manages access and navigation intelligently. It ensures users always reach the right pages based on authentication and roles, simplifying route management and enforcing access control in any application—whether a simple dashboard or a large-scale app.
 
 ---
 
-## What Makes RouteKeeper Special?
+## Features / What It Does
 
-"Think of RouteKeeper as your app’s **intelligent routing system**—ensuring users always reach the right pages efficiently."
+### Declarative Route Guards
+- Protect routes based on authentication state (`auth`) and user roles (`userRoles`) without writing repetitive logic.
 
-## Key Features
+### Role-Based Access Control (RABC)
+- Restrict routes to users with specific roles.
+- Supports inheritance across nested routes for flexible access management.
 
-- **Smart `/` Route**: Displays a landing page for visitors and a dashboard for authenticated users.
-- **Secure Private Routes**: Ensures that private routes remain inaccessible to unauthorized users.
-- **Role-Based Access Control**: Restrict certain routes to specific roles automatically, such as admin-only sections.
-- **Intelligent Public Routes**: Redirects logged-in users away from pages like login or signup to improve user experience.
-- **Nested Route Support**: Handles complex route hierarchies, allowing routes within routes.
-- **Built-in Error Handling**: Provides fallback components for errors and unauthorized access.
+### Public, Private, and Neutral Routes
+- **Public:** Accessible to all users; can redirect authenticated users.
+- **Private:** Requires authentication, with optional role checks.
+- **Neutral:** Always accessible, ignores authentication.
 
+### Nested Routes Support
+- Seamlessly works with deeply nested route configurations.
+- Respects parent roles and route types.
+
+### Redirect Handling
+- Automatically redirect users if they try to access unauthorized routes.
+- Supports `pathname`, `search`, `hash`, `state`, `replace`, `relative`, and `preventScrollReset`.
+
+### Lazy-Loaded Routes Support
+- Handles `React.lazy` routes with built-in `Suspense` fallbacks.
+
+### Custom Fallback Screens
+- **Loading screen:** `loadingScreen`
+- **Private route fallback:** `privateFallback`
+- **Unauthorized access screen:** `unAuthorized`
+- **Not found page:** `notFound`
+
+### Optional Error Boundary
+- Wraps your app in an error boundary by default.
+- Can be disabled using `disableErrorBoundary`.
+
+### Route Change & Redirect Callbacks
+- **onRouteChange:** Triggered when the current route changes.
+- **onRedirect:** Triggered whenever a redirect occurs.
+
+### Development Warnings
+- Provides helpful console warnings for misconfigured routes, duplicate paths, invalid redirects, and more.
 
 ## Quick Start
 
@@ -46,13 +74,14 @@ import { RouteKeeper } from "routekeeper-react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import LandingPage from "./components/LandingPage";
+import { defineRoutes } from 'routekeeper-react';
 
 const userIsLoggedIn = true; // Replace with your auth logic
 
-const routes = [
+const routes = defineRoutes([
   { path: "/", element: <Home />, type: "private" },
   { path: "/login", element: <Login />, type: "public" }
-];
+]);
 
 const App = () => {
   return (
@@ -80,22 +109,24 @@ export default App;
 | `private` | Accessible only to authenticated users. Unauthenticated users are redirected to `privateRedirect` or shown `privateFallback`. |
 | `neutral` | Accessible to everyone, regardless of authentication state. RouteKeeper does not enforce any auth or redirection. |
  
- ---
 
 ## RouteKeeper Props Reference
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `routes` | `RouteConfig[]` | `[]` | Array of route definitions. |
-| `auth` | `boolean` | `false` | Authentication state of the current user. |
-| `userRoles` | `string[]` | `[]` | List of roles assigned to the current user. |
-| `loading` | `boolean` | `false` | Global loading state, e.g., while authenticating. |
-| `loadingScreen` | `React.ReactNode` | `<LoadingScreen />` | Custom component to display while loading. |
-| `privateRedirect` | `string` | `"/"` | Path to redirect unauthenticated users attempting to access private routes. |
-| `publicRedirect` | `string` | `/login` | Path to redirect authenticated users visiting public routes. |
-| `privateFallback` | `React.ReactNode` | `<LandingFallback />` | Fallback UI for private routes when access is restricted.This is your landing page slot |
-| `unAuthorized` | `React.ReactNode` | `<Unauthorized />` | UI displayed when user lacks permission for a route. |
-| `notFound` | `React.ReactNode` | `<NotFound />` | UI displayed for non-existent routes. |
+| `routes` | `RouteConfig[]` | `[]` | Array of route definitions used by RouteKeeper. |
+| `auth` | `boolean \| string` | `false` | Authentication state of the user. Pass `true`/`false` or a token string (e.g., JWT). Non-empty string is treated as authenticated. |
+| `userRoles` | `string[]` | `[]` | Roles assigned to the current user for role-based access control. |
+| `loading` | `boolean` | `false` | Global loading state (e.g., while authenticating). |
+| `loadingScreen` | `React.ReactNode` | `<LoadingScreen />` | Custom component displayed while loading. |
+| `privateRedirect` | `string` | `"/login"` | Path to redirect unauthenticated users from private routes. |
+| `publicRedirect` | `string` | `/` | Path to redirect authenticated users from public-only routes. |
+| `privateFallback` | `React.ReactNode` | `<LandingFallback />` | Fallback UI for private routes when access is restricted. |
+| `unAuthorized` | `React.ReactNode` | `<Unauthorized />` | UI shown when user lacks permission for a route. |
+| `notFound` | `React.ReactNode` | `<NotFound />` | UI shown for non-existent routes (404). |
+| `disableErrorBoundary` | `boolean` | `false` | Disables RouteKeeper’s internal ErrorBoundary. |
+| `onRouteChange` | `(location: string) => void` | `undefined` | Callback fired whenever the route changes. |
+| `onRedirect` | `(from: string, to: string) => void` | `undefined` | Callback fired whenever a redirect occurs. |
 
 
 ## Individual Route Props
@@ -103,13 +134,16 @@ export default App;
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `path` | `string` | `undefined` | The URL path for this route. Required for normal routes; not used for index routes. |
-| `index` | `boolean` | `false` | Marks the route as an index route (renders at the parent path). |
-| `element` | `React.ReactNode` | `undefined` | The React component to render when this route is matched. |
-| `type` | `"public" \| "private" \| "neutral"` | `"public"` | Defines the access type for the route: public, private, or neutral. |
-| `children` | `RouteConfig[]` | `[]` | Nested routes under this route for multi-level hierarchies. |
+| `index` | `boolean` | `false` | Marks the route as an index route (renders at the parent path). Cannot be used with `path`. |
+| `element` | `React.ReactNode` | `undefined` | The React component to render when this route is matched. Mutually exclusive with `redirectTo`. |
+| `redirectTo` | `RedirectTo` | `undefined` | Redirect configuration. Mutually exclusive with `element`. |
+| `type` | `"public" \| "private" \| "neutral"` | `"public"` | Defines access type: public, private, or neutral. |
+| `children` | `RouteConfig[]` | `[]` | Nested routes for multi-level hierarchies. |
 | `roles` | `string[]` | `[]` | Optional roles allowed to access this route. If omitted, all authenticated users can access. |
-| `caseSensitive` | `boolean` | `false` | Whether the route matching should be case-sensitive. |
+| `caseSensitive` | `boolean` | `false` | Whether route matching should be case-sensitive. |
 | `excludeParentRole` | `boolean` | `false` | If `true`, this route will not inherit allowed roles from its parent route. |
+| `fallback` | `React.ReactNode` | `undefined` | Optional fallback UI for lazy-loaded routes. Only used with `element` passed as lazy. |
+
 
 
 
@@ -122,6 +156,7 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { RouteKeeper, type RouteConfig } from "routekeeper-react";
 import { AuthProvider, useAuth } from "./auth";
+import { defineRoutes } from 'routekeeper-react';
 
 // Import your page components
 import Login from "./pages/Login";
@@ -140,7 +175,7 @@ import AccessDenied from "./components/AccessDenied";
 import SpinnyThing from "./components/SpinnyThing";
 
 // Define the application routes
-const routes: RouteConfig[] = [
+const routes = defineRoutes([
   // Public routes
   { path: "/login", element: <Login />, type: "public" },
   { path: "/signup", element: <SignUp />, type: "public" },
@@ -175,26 +210,39 @@ const routes: RouteConfig[] = [
       { path: "sharefile", element: <ShareFile />, type: "neutral" },
     ],
   },
-];
+]);
 
 // Component that wraps RouteKeeper with authentication state
 const AppContent = () => {
   const { accessToken, loading, userRoles } = useAuth();
 
-  return (
-    <RouteKeeper
-      routes={routes}             // Pass the route definitions
-      auth={accessToken}          // Current user authentication state
-      loading={loading}           // Show loader while auth state is initializing
-      loadingScreen={<SpinnyThing />} // Custom loader component
-      publicRedirect="/"          // Redirect authenticated users from public pages
-      privateFallback={<WelcomePage />} // Fallback UI for private routes
-      notFound={<OopsPage />}     // UI for unmatched routes
-      userRoles={userRoles}       // Current user's roles
-      unAuthorized={<AccessDenied />} // UI for unauthorized access
-    />
-  );
-};
+ return (
+  <RouteKeeper
+    routes={routes}                 // Route definitions (RouteConfig[])
+    auth={accessToken}              // Auth state: boolean or token string
+
+    loading={loading}               // Global loading state (e.g. auth check)
+    loadingScreen={<SpinnyThing />} // UI shown while loading is true
+
+    privateRedirect="/login"         // Redirect unauthenticated users from private routes
+    publicRedirect="/"      // Redirect authenticated users from public-only routes
+
+    privateFallback={<WelcomePage />} // UI shown when private access is blocked
+    unAuthorized={<AccessDenied />}   // UI shown when user lacks required role(s)
+    notFound={<OopsPage />}           // UI for unmatched routes (404)
+
+    userRoles={userRoles}            // Current user's roles for RBAC
+
+    disableErrorBoundary={false}     // Use RouteKeeper's internal ErrorBoundary
+    onRouteChange={(location) =>     // Fired on every route change
+      console.log("📍 Route changed:", location)
+    }
+    onRedirect={(from, to) =>        // Fired on every automatic redirect
+      console.log(`🔀 Redirected from ${from} → ${to}`)
+    }
+  />
+);
+
 
 // Root application component
 const App = () => (
@@ -211,10 +259,61 @@ export default App;
 ```
 
 ---
+## Lazy Route
 
-## The Magic of the `/` Route
+```tsx
+const LazyReports = lazy(() => import("./Reports"));
 
-This is where RouteKeeper really shines! 
+{
+  path: "/reports",
+  element: <LazyReports />,
+  type: "private",
+  roles: ["admin"],
+}
+
+
+```
+
+## Redirects Made Easy
+
+RouteKeeper makes handling redirects simple, flexible, and powerful. Here’s what it does for you:
+
+- **Automatic page redirects**  
+No need to write extra logic—RouteKeeper will automatically redirect users from one route to another.  
+  
+```tsx
+{
+    path: "/old-dashboard",
+    redirectTo: { pathname: "/dashboard" },
+}
+```
+ 
+- **Advanced routing**  
+```tsx
+  redirectTo: {
+  pathname: "/dashboard",
+  search: "?tab=2",
+  hash: "#profile",
+  state: { from: "/login" },
+  replace: true,
+  relative: "route",
+  preventScrollReset: true,
+}
+```
+
+```tsx
+
+<RouteKeeper
+  routes={routes}
+  onRedirect={(from, to) => console.log(`Redirected from ${from} → ${to}`)}
+/>
+```
+
+
+
+
+
+## The `/` Route Behaviour
 
 | User Status | What They See at `/` | Why It's Awesome |
 |-------------|---------------------|------------------|
@@ -224,39 +323,52 @@ This is where RouteKeeper really shines!
 ### Behind the Scenes
 
 ```
-🌐 User visits "/"
-       │
-       ▼
-🤔 "Are you logged in?"
-       │
-   ┌───┴───┐
-   │       │
-✅ YES    ❌ NO
-   │       │
-   ▼       ▼
-🏠 Show   🚀 Show
-   Home      Landing
-   Page      Page
+  User visits "/"
+        │
+        ▼
+ "Are you logged in?"
+        │
+    ┌───┴───┐
+    │       │
+   YES      NO
+    │       │
+    ▼       ▼
+   Show   Show
+   Home   Landing
+   Page   Page
 ```
 
 ---
 
-## Avoiding Redirect Loops
+## Avoiding Navigation Issues
 
-When configuring routes, it is important to avoid situations that can cause infinite redirects.  
+Using Navigate inside a route element can push multiple entries into the history stack and make users feel “stuck” when navigating back. 
 
 **Incorrect Approach (Causes Redirect Loop):**
 
 ```tsx
-// This configuration can create an infinite loop
+// This configuration causes history stacking issues
 {
   path: "/",
-  element: <Navigate to="/home" replace />, // Redirecting to another route immediately
+  element: <Navigate to="/home" />, // Pushes a new history entry on every render
   type: "private"
 }
+
 ```
 
-**Correct Approach:**
+If You Must Use Navigate
+Always use replace:
+
+```tsx
+{
+  path: "/",
+  element: <Navigate to="/home" replace />, // Replaces history instead of pushing
+}
+
+```
+This prevents history stacking and restores normal back-button behavior.
+
+**Recommended Approach (RouteKeeper Way)**
 ```tsx
 // Let RouteKeeper handle routing without causing loops
 {
@@ -266,13 +378,23 @@ When configuring routes, it is important to avoid situations that can cause infi
 }
 ```
 
+Use RouteKeeper’s Internal redirectTo for Redirects
+ For intentional redirects (legacy paths, renamed routes), use RouteKeeper’s built-in redirect support:
+ ```tsx
+
+{
+  path: "/",
+  redirectTo: { pathname: "/home", replace: true },
+}
+
+ ```
 
 ### Why This Approach Works
 
 1. **Unauthenticated user visits `/`** → The `privateFallback` component (landing page) is displayed.  
-2. **Authenticated user visits `/`** → The route's `element` (home page) is rendered.  
-3. **Authenticated user visits `/login`** → Automatically redirected to `/` and sees the home page.  
-4. **Result:** Routing works predictably with no redirect loops or unexpected behavior.
+2. **Authenticated user visits `/`** → The route's `element` (home page) is rendered, returns Navigate with replace or use internal redirect to redirect. 
+3. **Authenticated user visits `/login` or any public route** → Automatically redirected to `/` and sees the home page.  
+4. **Result:** Routing works predictably with no  unexpected behavior.
 
 
 ---
@@ -342,7 +464,7 @@ const MySpinnyLoader = () => (
 { path: "/about", element: <About />, type: "public" }
 ```
 
-** Child routes (have parents):** Inherit from **daddy/mommy**
+**Child routes (have parents):** Inherit from **daddy/mommy**
 ```jsx
 {
   path: "/members",
@@ -359,17 +481,29 @@ const MySpinnyLoader = () => (
 
 ### The Sacred `/` Route Exception  
 
-**Plot Twist #2:** The `/` route is **ALWAYS treated as private**, no matter what you tell it! 
+**Plot Twist #2:** The `/` route is **ALWAYS treated differetly**.
+Even if you explicitly mark it as public, RouteKeeper will override that decision and warn you in development.
 
 ```jsx
-// You can try to make it public, but RouteKeeper says "Nah!"
-{ path: "/", element: <Home />, type: "public" } // Still becomes private!
+// You can try to make it public, but RouteKeeper steps in
+{ path: "/", element: <Home />, type: "public" } // ⚠️ Still handled specially
 
-//  It's like trying to make the front door of your house public
-// RouteKeeper: "Nice try, but that's staying private!" 
 ```
+/ is not a normal route — it’s the entry point of your application.
 
-**Why?** Because `/` is special - it's your app's identity! RouteKeeper protects it like a mama bear protects her cubs 
+**Why Does RouteKeeper Do This??**
+
+Because `/` defines the **first impression of your application**.
+
+RouteKeeper treats the root route as special to ensure it:
+
+- never behaves unpredictably  
+- never pollutes browser history with unnecessary redirects  
+- works consistently across all authentication states
+
+By handling `/` differently, RouteKeeper guarantees a predictable, safe, and user-friendly entry point into your app—whether the user is logged in or not.
+?
+
 
 ### The Great Parent-Child Role Reversal
 
@@ -387,7 +521,7 @@ const MySpinnyLoader = () => (
       element: <PublicInfo />,
       type: "public" // Child says "Actually, I'm public!" 
     }
-    // Result: /dashboard/public-info is accessible to everyone!
+    // Result: /dashboard/public-info is accessible to everyone not authenticated!
   ]
 }
 ```
@@ -405,7 +539,7 @@ The Rule Book:
 ┌─────────────────────────────────────────────┐
 │ 1️⃣ Top-level, no type? → PUBLIC             │
 │ 2️⃣ Child route, no type? → INHERIT PARENT   │
-│ 3️⃣ Path is "/"? → ALWAYS PRIVATE           │  
+│ 3️⃣ Path is "/"? → ALWAYS DIFFERENT           │  
 │ 4️⃣ Child explicitly overrides? → CHILD WINS │
 │ 5️⃣ Everything else? → FOLLOW THE TYPE       │
 └─────────────────────────────────────────────┘
@@ -415,8 +549,8 @@ The Rule Book:
 
 ```tsx
 const routesExample = [
-  // Private route: root path
-  { path: "/", element: <Home /> }, // Top-level private route
+
+  { path: "/", element: <Home /> }, // Treated differently and can be controlled with redirectTo.
 
   // Public route: top-level default
   { path: "/contact", element: <Contact /> }, // No type specified → public by default
@@ -442,16 +576,18 @@ const routesExample = [
 /*
 Routing behavior:
 
-- / → Private (top-level root)
+- / → Different 
 - /contact → Public (top-level default)
 - /members → Private (explicit)
 - /members/profile → Private (inherits from parent)
 - /members/join → Public (explicit child override)
 - /members/settings → Private (inherits from parent)
 */
+```
 
 
-### Pro Tips for the Brave
+
+### Pro Tips 
 
 ```jsx
 // Want predictable behavior? Always specify the type!
@@ -466,7 +602,12 @@ Routing behavior:
   ]
 }
 
-// Control the root (/) route using privateFallback:
+// Control the root (/) route using privateFallback or redirectTo:
+{
+  path: "/",
+  redirectTo: { pathname: "/home", replace: true },
+}
+
 <RouteKeeper 
   privateFallback={<LandingPage />} // Displayed for unauthenticated users
 />
@@ -488,7 +629,6 @@ Found a bug or want to add a feature? Contributions are welcome!
 Please ensure your code follows the existing style and includes clear commit messages.
 
 ---
-
 
 ## License
 

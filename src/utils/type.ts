@@ -15,11 +15,11 @@ export interface RedirectTo {
 export type RenderRoute = {
   element: React.ReactNode;
   redirectTo?: never;
-  fallback?: never;     
+  fallback?: never;
 };
 
 export type RedirectRoute = {
-  redirectTo: RedirectTo;  
+  redirectTo: RedirectTo;
   element?: never;
   fallback?: never;
 };
@@ -39,7 +39,7 @@ export type PathRouteConfig = {
 
 
 export type RouteConfig =
-  (RenderRoute | RedirectRoute) &  
+  (RenderRoute | RedirectRoute) &
   (IndexRouteConfig | PathRouteConfig) &
   {
     type?: RouteType;
@@ -50,7 +50,7 @@ export type RouteConfig =
 
 export interface RouteGuardProps {
   routes: RouteConfig[];
-  auth: boolean | string; 
+  auth: boolean | string;
   userRoles?: string[];
   loading: boolean;
   loadingScreen?: React.ReactNode;
