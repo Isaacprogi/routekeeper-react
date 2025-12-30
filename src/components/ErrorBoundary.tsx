@@ -1,6 +1,6 @@
 import React, { Component, type ReactNode, ErrorInfo } from "react";
-import "../styles/ErrorBoundary.css";
-
+// 1. Import the CSS module
+import styles from "../styles/ErrorBoundary.module.css";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -25,52 +25,54 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
   render() {
     if (this.state.hasError) {
       return (
-        <div className="eb-full-page">
+        // 2. Use styles object instead of string literals
+        <div className={styles["eb-full-page"]}>
           {/* Left Side: Human Interaction */}
-          <aside className="eb-sidebar">
-            <div className="eb-status-tag">System Alert</div>
-            <h1 className="eb-hero-title">R-Keeper</h1>
-            <p className="eb-description">
+          <aside className={styles["eb-sidebar"]}>
+            {/* <div className={styles["eb-status-tag"]}>System Alert</div> */}
+            <h1 className={styles["eb-hero-title"]}>R-Keeper</h1>
+            <p className={styles["eb-description"]}>
               The application encountered a critical exception. We've captured the diagnostics 
               to the right to help resolve the issue.
             </p>
             
-            <div className="eb-actions">
-              <button onClick={() => window.location.reload()} className="eb-btn-main">
+            <div className={styles["eb-actions"]}>
+              <button onClick={() => window.location.reload()} className={styles["eb-btn-main"]}>
                 Refresh Interface
               </button>
-              <button onClick={() => window.location.href = '/'} className="eb-btn-outline">
+              <button onClick={() => window.location.href = '/'} className={styles["eb-btn-outline"]}>
                 Return Home
               </button>
             </div>
 
-            <div className="eb-footer-note">
-              Reference ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
+            <div className={styles["eb-footer-note"]}>
+              {/* Reference ID: {Math.random().toString(36).substr(2, 9).toUpperCase()} */}
             </div>
           </aside>
 
           {/* Right Side: Technical Data Spread */}
-          <main className="eb-main-content">
-            <section className="eb-section">
+          <main className={styles["eb-main-content"]}>
+            <section className={styles["eb-section"]}>
               <label>Exception Message</label>
-              <div className="eb-message-box">
+              <div className={styles["eb-message-box"]}>
                 {this.state.error?.message || "Internal Application Error"}
               </div>
             </section>
 
-            <section className="eb-section eb-flex-grow">
+            {/* 3. Handling multiple classes */}
+            <section className={`${styles["eb-section"]} ${styles["eb-flex-grow"]}`}>
               <label>Stack Diagnostics</label>
-              <div className="eb-stack-container">
+              <div className={styles["eb-stack-container"]}>
                 <pre>{this.state.error?.stack || "No stack trace available."}</pre>
               </div>
             </section>
 
-            <section className="eb-grid-details">
-              <div className="eb-detail-item">
+            <section className={styles["eb-grid-details"]}>
+              <div className={styles["eb-detail-item"]}>
                 <label>Environment</label>
                 <span>{process.env.NODE_ENV}</span>
               </div>
-              <div className="eb-detail-item">
+              <div className={styles["eb-detail-item"]}>
                 <label>Component Trace</label>
                 <span>{this.state.errorInfo?.componentStack ? "Captured" : "N/A"}</span>
               </div>

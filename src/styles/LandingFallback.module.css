@@ -1,0 +1,126 @@
+/* LandingFallback.module.css - CSS Modules for Tailwind Compatibility */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a0a0c;
+  background-image: radial-gradient(circle at 50% 50%, #1a1a20 0%, transparent 70%);
+  color: #ffffff;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.contentWrapper {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 42rem; /* Equivalent to Tailwind's max-w-2xl */
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.emoji {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.3));
+  animation: bounce 2.5s infinite ease-in-out;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800; 
+  color: #ffffff; 
+  margin-bottom: 1.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  animation: fadeIn 1.2s ease-out;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #88888e;
+  line-height: 1.6;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2.5rem;
+  animation: fadeIn 1.5s ease-out;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #88888e;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.code {
+  font-family: 'JetBrains Mono', monospace;
+  color: #00f2ff;
+  background: rgba(0, 242, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.italicText {
+  font-style: italic;
+  font-size: 1rem;
+  color: #88888e;
+  margin-bottom: 1.5rem;
+}
+
+.docsLink {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-style: italic;
+  color: #2563eb;
+  text-decoration: none;
+  border-bottom: 1px dashed #2563eb;
+  padding: 2px 0;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.docsLink:hover {
+  color: #1e40af;
+  border-bottom-style: solid;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 2.5rem; 
+  }
+  
+  .description,
+  .subtitle {
+    font-size: 1.25rem;
+  }
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(15px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-15px); 
+  }
+}

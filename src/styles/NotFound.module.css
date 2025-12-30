@@ -47,6 +47,7 @@
   justify-content: center;
   gap: 0.75rem; /* space-y-3 */
   margin-top: 1.5rem;
+
 }
 
 .not-found-buttons a {
@@ -60,7 +61,7 @@
 }
 
 .not-found-buttons .home-button {
-  background-color: #4f46e5; /* indigo-600 */
+  background-color: #0a0a0c; /* indigo-600 */
   color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

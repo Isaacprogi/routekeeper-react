@@ -1,21 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../styles/NotFound.css";
+// 1. Import the styles object
+import styles from "../styles/NotFound.module.css";
 
 export const NotFound: React.FC = () => {
   return (
-    <div className="not-found-container">
-      <h1 className="not-found-title">404</h1>
+    // 2. Map class names using bracket notation for hyphenated keys
+    <div className={styles["not-found-container"]}>
+      <h1 className={styles["not-found-title"]}>404</h1>
 
-      <div className="not-found-card">
+      <div className={styles["not-found-card"]}>
         <h2>Oops! Page Not Found</h2>
         <p>The page you are looking for doesn’t exist or has been moved.</p>
 
-        <div className="not-found-buttons">
-          <Link to="/" className="home-button">
+        <div className={styles["not-found-buttons"]}>
+          <Link to="/" className={styles["home-button"]}>
             Go Home
           </Link>
-          <Link to="/contact" className="contact-button">
+          <Link to="/contact" className={styles["contact-button"]}>
             Contact Support
           </Link>
         </div>
@@ -23,4 +25,3 @@ export const NotFound: React.FC = () => {
     </div>
   );
 };
-

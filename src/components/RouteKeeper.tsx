@@ -17,7 +17,7 @@ console.log(
 );
 export const RK: React.FC<RouteGuardProps> = ({
   routes,
-  auth:isAuth,
+  auth: isAuth,
   userRoles = [],
   loading,
   loadingScreen = <LoadingScreen />,
@@ -31,7 +31,6 @@ export const RK: React.FC<RouteGuardProps> = ({
   onRouteChange,
   onRedirect,
 }) => {
-
   const auth = typeof isAuth === "string" ? Boolean(isAuth) : isAuth;
 
   const location = useLocation();
@@ -130,7 +129,7 @@ export const RK: React.FC<RouteGuardProps> = ({
         if (index) {
           if (indexUsed) {
             devWarn(
-              `Duplicate sibling path "${path}" at parentKey="${parentKey}" ignored.`
+              `Duplicate sibling path "${path}" at parentKey="${parentKey}".`
             );
             return null;
           }
@@ -140,7 +139,7 @@ export const RK: React.FC<RouteGuardProps> = ({
         if (path) {
           if (usedPaths.has(path)) {
             devWarn(
-              `Duplicate sibling path "${path}" at parentKey="${parentKey}" ignored.`
+              `Duplicate sibling path "${path}" at parentKey="${parentKey}".`
             );
             return null;
           }
@@ -182,7 +181,10 @@ export const RK: React.FC<RouteGuardProps> = ({
           devWarn(`redirectTo.pathname cannot be empty.`);
         }
 
-        if (path === "/" && (type === "public" || type === "private" || type === "neutral")) {
+        if (
+          path === "/" &&
+          (type === "public" || type === "private" || type === "neutral")
+        ) {
           devWarn(
             `Root "/" does not need a type. It is handled differently. Please refer docs`
           );
@@ -190,6 +192,12 @@ export const RK: React.FC<RouteGuardProps> = ({
         if (path && redirectTo?.pathname && path === redirectTo?.pathname) {
           console.log(redirectTo);
           devWarn(`redirectTo and path can't have the same route.`);
+        }
+
+        if (path === "" && (element || redirectTo?.pathname)) {
+          devWarn(
+            `A route with an element or redirect must define a valid "path".`
+          );
         }
 
         const routeType = type || inheritedType || "public";
