@@ -5,3 +5,9 @@ export { Unauthorized } from "./components/UnAuthorized";
 export { ErrorBoundary } from "./components/ErrorBoundary";
 export { RouteKeeper } from "./components/RouteKeeper";
 export type { RouteGuardProps, RouteConfig } from "./utils/type";
+export { defineRoutes } from "./components/DefineConfig";
+
+
+
+
+

@@ -1,107 +1,66 @@
 import React from "react";
 
-/**
- * Route access type
- */
 export type RouteType = "public" | "private" | "neutral";
 
-/**
- * Index route (no path, no children)
- */
-type IndexRouteConfig = {
-  index: true;
-  element: React.ReactNode;
-  type?: RouteType;
+export interface RedirectTo {
+  pathname: string;
+  search?: string;
+  hash?: string;
+  state?: any;
+  replace?: boolean;
+  relative?: "route" | "path";
+  preventScrollReset?: boolean;
+}
 
-  // explicitly disallowed
+export type RenderRoute = {
+  element: React.ReactNode;
+  redirectTo?: never;
+  fallback?: never;     
+};
+
+export type RedirectRoute = {
+  redirectTo: RedirectTo;  
+  element?: never;
+  fallback?: never;
+};
+
+
+export type IndexRouteConfig = {
+  index: true;
   path?: never;
   children?: never;
 };
 
-/**
- * Path route (normal route)
- */
-type PathRouteConfig = {
+export type PathRouteConfig = {
   path: string;
   index?: false;
-  element: React.ReactNode;
-  type?: RouteType;
   children?: RouteConfig[];
 };
 
-/**
- * Unified route config used by RouteKeeper
- */
-export type RouteConfig = (IndexRouteConfig | PathRouteConfig) & {
-  /**
-   * Allowed roles for this route
-   * If omitted, route is accessible to all authenticated users
-   */
-  roles?: string[];
 
-  /**
-   * Whether the route should match case-sensitively
-   */
-  caseSensitive?: boolean;
+export type RouteConfig =
+  (RenderRoute | RedirectRoute) &  
+  (IndexRouteConfig | PathRouteConfig) &
+  {
+    type?: RouteType;
+    roles?: string[];
+    caseSensitive?: boolean;
+    excludeParentRole?: boolean;
+  };
 
-  /**
-   * Prevent inheriting parent roles
-   */
-  excludeParentRole?: boolean;
-};
-
-/**
- * Props for the RouteGuard / RouteKeeper component
- */
 export interface RouteGuardProps {
-  /**
-   * Route definitions
-   */
   routes: RouteConfig[];
-
-  /**
-   * Authentication state
-   */
-  auth: boolean;
-
-  /**
-   * Current user's roles
-   */
+  auth: boolean | string; 
   userRoles?: string[];
-
-  /**
-   * Global loading state (e.g. auth bootstrap)
-   */
   loading: boolean;
-
-  /**
-   * Screen to show while loading
-   */
   loadingScreen?: React.ReactNode;
-
-   /**
-   * Redirect unauthenticated users
-   * when accessing private routes
-   */
   privateRedirect: string;
-
-  /**
-   * Redirect path for authenticated users visiting public routes
-   */
   publicRedirect?: string;
-
-  /**
-   * Fallback UI for private routes
-   */
   privateFallback?: React.ReactNode;
-
-  /**
-   * Unauthorized access UI
-   */
   unAuthorized?: React.ReactNode;
-
-  /**
-   * Not-found route UI
-   */
   notFound?: React.ReactNode;
+  disableErrorBoundary?: boolean;
+  setRemoveErrorBoundary?: React.Dispatch<React.SetStateAction<boolean>>;
+  onRouteChange?: (location: string) => void;
+  onRedirect?: (from: string, to: string) => void;
 }

@@ -1,16 +1,167 @@
 /* ErrorBoundary.css */
-
-.error-boundary-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 1rem;
-  text-align: center;
+:root {
+  --bg-dark: #0a0a0c;
+  --bg-panel: #141417;
+  --accent: #00f2ff; /* Cyan diagnostic color */
+  --text-dim: #88888e;
+  --text-bright: #ffffff;
+  --border: #26262b;
 }
 
-.error-boundary-message {
-  font-size: 1.5rem; /* text-2xl */
-  font-weight: 700; /* font-bold */
-  color: #dc2626; /* red-600 */
+.eb-full-page {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-bright);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Sidebar Styling */
+.eb-sidebar {
+  padding: 60px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-image: radial-gradient(circle at 0% 0%, #1a1a20 0%, transparent 50%);
+}
+
+.eb-status-tag {
+  color: var(--accent);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.eb-hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.eb-description {
+  color: var(--text-dim);
+  line-height: 1.6;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+.eb-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eb-btn-main {
+  padding: 16px;
+  background: var(--accent);
+  color: black;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.eb-btn-outline {
+  padding: 16px;
+  background: transparent;
+  color: white;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+/* Main Content Area (Spacious) */
+.eb-main-content {
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  overflow-y: auto;
+}
+
+.eb-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eb-flex-grow {
+  flex-grow: 1;
+}
+
+label {
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.eb-message-box {
+  font-size: 1.5rem;
+  color: #ff4d4d; /* Red for the actual error message */
+  font-family: 'JetBrains Mono', monospace;
+  background: #1a1212;
+  padding: 24px;
+  border-left: 4px solid #ff4d4d;
+}
+
+.eb-stack-container {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 30px;
+  border-radius: 4px;
+  height: 400px;
+  overflow: auto;
+}
+
+.eb-stack-container pre {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: #a5a5b0;
+  line-height: 1.7;
+}
+
+.eb-grid-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+
+.eb-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eb-detail-item span {
+  font-family: monospace;
+  color: var(--accent);
+}
+
+.eb-footer-note {
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1000px) {
+  .eb-full-page {
+    grid-template-columns: 1fr;
+  }
+  .eb-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 40px;
+  }
 }

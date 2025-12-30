@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
-import {libInjectCss} from "vite-plugin-lib-inject-css";  // ← Add this
+import { libInjectCss } from "vite-plugin-lib-inject-css";
 import path from "path";
 
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
     }),
-    libInjectCss(),  // ← Add this plugin
+    libInjectCss(),
   ],
 
   build: {
@@ -22,7 +22,7 @@ export default defineConfig({
       formats: ["es", "cjs"],
       fileName: (format) => `index.${format}.js`,
     },
-    cssCodeSplit: false, // Keeps all CSS in one style.css file
+    cssCodeSplit: false,
     rollupOptions: {
       external: ["react", "react-dom", "react-router-dom"],
       output: {
@@ -31,7 +31,18 @@ export default defineConfig({
           "react-dom": "ReactDOM",
           "react-router-dom": "ReactRouterDOM",
         },
-        assetFileNames: "style.css", // Ensures consistent CSS filename
+        assetFileNames: "style.css",
+      },
+    },
+
+    // ← ADD THIS TO KEEP CONSOLE LOGS
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: false,  // Keep console.log/warn/error
+      },
+      format: {
+        comments: false, // Optional: remove comments too if you want
       },
     },
   },

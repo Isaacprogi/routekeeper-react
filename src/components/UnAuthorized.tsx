@@ -9,8 +9,6 @@ export const Unauthorized: React.FC = () => {
 
       <div className="unauthorized-card">
         <h2>Unauthorized Access</h2>
-        <p>You do not have permission to view this page. Please login to continue.</p>
-
         <div className="unauthorized-buttons">
           <Link to="/">Go Home</Link>
         </div>
